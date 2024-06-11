@@ -10,7 +10,7 @@ public class EnemyLives extends Rectangle{
 	
 	public EnemyLives(int x,int y,int width,int height) {
 		super(x,y,width,height);
-		interval = (width-90)/Game.level;
+		interval = (width-90)/GamePanel.level;
 	}
 	
 	public void draw(Graphics g) {
@@ -25,7 +25,7 @@ public class EnemyLives extends Rectangle{
 		graphics2d.setColor(Color.RED.darker().darker().darker());
 		graphics2d.drawRoundRect(x+90, y, width-90, height,10,10);
 		graphics2d.setColor(Color.RED.darker().darker().darker());
-		for(int i = 0;i<Game.level-1;i++) {
+		for(int i = 0;i<GamePanel.level-1;i++) {
 			graphics2d.drawLine(x+90+interval*(i+1), y, x+90+interval*(i+1), y+height);
 		}
 		
@@ -36,7 +36,7 @@ public class EnemyLives extends Rectangle{
 	public void update() {
 		if(end_width < GamePanel.killed_enemy*interval && end_width<width-90) {
 			end_width += 2;
-			//ystem.out.println("end_width = "+end_width);
+			System.out.println("end_width = "+end_width);
 		}
 	}
 }

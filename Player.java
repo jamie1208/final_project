@@ -197,7 +197,7 @@ public class Player extends Entity{
 					GamePanel.killed_enemy += 1;
 					System.out.println("ennmy die!");
 					GamePanel.playSound(STEPENEMYSOUND, stepEnemyThread);
-					if(Game.level == GamePanel.killed_enemy) {
+					if(GamePanel.level == GamePanel.killed_enemy) {
 						GamePanel.playSound(WIN, winThread);
 						//GamePanel.success = true;
 					}

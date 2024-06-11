@@ -1,6 +1,7 @@
 package com.martio.game;
 
 import java.awt.*;
+import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +12,13 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
-public class EndPanel extends JPanel implements Runnable{
+import game.TimeFeeling;
+
+public class EndPanel extends Canvas implements Runnable{
+	public double enemyCp;
+	public int level;
+	public double playerCp;
+	public int get_waffle;
     //set panel size
     static final int END_WIDHTH = 1280;
     static final int END_HEIGHT = 720;
@@ -46,8 +53,12 @@ public class EndPanel extends JPanel implements Runnable{
     Random random;
     boolean close;
 
-    EndPanel(boolean success) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
-        random = new Random();
+    EndPanel(boolean success,double enemyCp,double playerCp,int level,int get_waffle) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
+		this.enemyCp = enemyCp;
+		this.playerCp = playerCp;
+		this.level = level;
+		this.get_waffle = get_waffle;
+    	random = new Random();
         close = false;
         this.success = success;
         setCP();
@@ -71,12 +82,12 @@ public class EndPanel extends JPanel implements Runnable{
 
     //設定total cp(+-10,四捨五入 , 鬆餅是怪獸1%)
     public void setCP(){
-        total_CP = (int)Math.round(Game.enemyCp*0.1);
+        total_CP = (int)Math.round(enemyCp *0.1);
         if(success){
-            total_CP += (int)Math.round(GamePanel.get_waffle*(Game.enemyCp*0.1));
+            total_CP += (int)Math.round(get_waffle*(enemyCp*0.1));
         }
         else{
-            total_CP = Math.abs(total_CP-(int)Math.round(GamePanel.get_waffle*(Game.enemyCp*0.1)));
+            total_CP = Math.abs(total_CP-(int)Math.round(get_waffle*(enemyCp*0.1)));
         }
     }
 
@@ -104,15 +115,19 @@ public class EndPanel extends JPanel implements Runnable{
         }
     }
     
-    public void paint(Graphics g){
-        //建立雙緩衝
-        image = createImage(getWidth(),getHeight());
-
-        //取得雙緩衝畫布
-        graphics = image.getGraphics();
-
-        draw(graphics);//所有物件畫於 雙緩衝
-        g.drawImage(image, 0, 0, this); //雙緩衝畫於 主panel
+    public void render(){
+		//getbufferStrategy返回此元件使用的緩衝區策略
+		BufferStrategy bs = getBufferStrategy();
+		if(bs == null) {
+			//建立緩衝區
+			System.out.println("creat bufferStrategy!");
+			createBufferStrategy(3);
+			return;//not建立完馬上畫,等到下次才畫
+		}
+		Graphics g = bs.getDrawGraphics();//取得畫筆
+		draw(g);
+		g.dispose();
+		bs.show();//顯示在frames
     }
 
     public void draw(Graphics g){
@@ -123,11 +138,11 @@ public class EndPanel extends JPanel implements Runnable{
 
         g.setColor(Color.white);
         g.setFont(new Font("ComicSansMS",Font.PLAIN,100));
-        g.drawString("+"+String.valueOf(GamePanel.get_waffle), END_WIDHTH/2,60+WAFFLE_HEIGHT+WL_HEIGHT);
+        g.drawString("+"+String.valueOf(get_waffle), END_WIDHTH/2,60+WAFFLE_HEIGHT+WL_HEIGHT);
         if(success)
-        g.drawString("CP +"+String.valueOf(total_CP+GamePanel.get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
+        g.drawString("CP +"+String.valueOf(total_CP+get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
         else{
-            g.drawString("CP -"+String.valueOf(total_CP+GamePanel.get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
+            g.drawString("CP -"+String.valueOf(total_CP+get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
         }
     }
 
@@ -137,17 +152,27 @@ public class EndPanel extends JPanel implements Runnable{
         double amountofTicks = 10.0; // 控制循環時間
         double ns = 1000000000/amountofTicks;
         double delta = 0;
+        double all_delta= 0;
         while(true){
             if(close){break;}
             long now = System.nanoTime();
             delta += (now-lastTime)/ns; // 單位：秒/60
+            all_delta += (now-lastTime)/ns;
             lastTime = now;
             if(delta>1){
                 img_num = random.nextInt(1,3);
                 chooseImg();
-                repaint();
+                render();
                 delta --;
             }
+            if(all_delta >20) {
+            	break;
+            }
         }
+        Window window = SwingUtilities.getWindowAncestor(EndPanel.this);
+        if (window != null) {
+            window.dispose();
+        }
+        System.out.println("finish");
     } 
 }

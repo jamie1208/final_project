@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.util.*;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import javax.swing.SwingUtilities;
 
 //Canvas 畫布 Graphics 畫筆
 //creatbufferStrategy -> 畫筆dipose()後,緩衝區show,就呈現在frames上了
@@ -21,9 +24,11 @@ public class GamePanel extends Canvas implements Runnable{
 	public static final int SCALE = 4; //規模 1280*720
 	//Dimension 封裝了width,height
 	Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH*SCALE,GAME_HEIGHT*SCALE);
-	
+	public double enemyCp;
+	public static int level;
+	public double playerCp;
 	public static boolean success = false; 
-	public static int success_delay = 0;
+	public int success_delay = 0;
 	public static boolean running = true;
 	public static boolean goThroughPipe = false;
 	public static int get_waffle = 0; // 得到的鬆餅總數
@@ -67,7 +72,10 @@ public class GamePanel extends Canvas implements Runnable{
 	
 	
 	//設定panel 的初始畫面
-	public GamePanel() {
+	public GamePanel(double enemyCp,double playerCp,int level) {
+		this.enemyCp = enemyCp;
+		this.playerCp = playerCp;
+		this.level = level;
 		System.out.println("game1Panel construcroer!");
 		this.setPreferredSize(SCREEN_SIZE);
 	}
@@ -220,8 +228,6 @@ public class GamePanel extends Canvas implements Runnable{
 		enemyLives.update();
 	}
 	
-	
-	@Override
 	public void run() {
 		init();
 		long lastTime = System.nanoTime();
@@ -233,7 +239,7 @@ public class GamePanel extends Canvas implements Runnable{
 		while(running) {
 			Long now = System.nanoTime();
 			delta += (now-lastTime)/ns;
-			if(Game.level == killed_enemy) {
+			if(level == killed_enemy) {
 				success = true;
 				render();
 				render();
@@ -243,6 +249,10 @@ public class GamePanel extends Canvas implements Runnable{
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				Window window = SwingUtilities.getWindowAncestor(GamePanel.this);
+            	if(window != null) {
+            		window.dispose();
+            	}
 				return;
 			}
 			lastTime = now;
@@ -259,6 +269,16 @@ public class GamePanel extends Canvas implements Runnable{
 				ticks = 0;
 			}
 		}
-		return;
+		Game.frame.remove(this);
+		try {
+			Game.endPanel = new EndPanel(success,enemyCp,playerCp,level,get_waffle);
+		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		Game.endThread = new Thread(Game.endPanel);	
+        Game.endThread.start();
+        Game.frame.add(Game.endPanel);
+        Game.frame.setFrame();
 	}
 }
