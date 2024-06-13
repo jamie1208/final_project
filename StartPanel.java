@@ -28,25 +28,17 @@ public class StartPanel extends Canvas implements Runnable{
 
     SoundHandler label_sound;
     JLabel startLabel;
-    //Image image;
+    //Image image;s
     //Graphics graphics;
     boolean start = false;
-	public double enemyCp;
-	public int level;
-	public double playerCp;
 
-
-	public StartPanel(double enemyCp,double playerCp,int level){
+	public StartPanel(){
 		GamePanel.goThroughPipe = false;
 		GamePanel.killed_enemy = 0;
 		GamePanel.get_waffle = 0;
 		GamePanel.lives = 3;
 		GamePanel.running = true;
 		EnemyLives.end_width = 0;
-		this.enemyCp = enemyCp;
-		this.playerCp = playerCp;
-		this.level = level;
-		GamePanel.level = level;
         try {
 			label_sound = new SoundHandler(LABEL_SOUND);
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
@@ -120,7 +112,7 @@ public class StartPanel extends Canvas implements Runnable{
             }
         }
         Game.frame.remove(this);
-        Game.gamePanel = new GamePanel(enemyCp,playerCp,level);
+        Game.gamePanel = new GamePanel();
 		Game.gameThread = new Thread(Game.gamePanel);	
         Game.gameThread.start();
         Game.frame.add(Game.gamePanel);

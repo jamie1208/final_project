@@ -161,12 +161,12 @@ public class Handler {
 				//深紫色 - 往下pipe 60,0,60
 				else if(red == 60 && green == 0 && blue == 60) {
 					//System.out.println("addPowerUp");
-					addTile(new Pipe(x*size-15, y*size, 2*size+30, size*9, true, Id.pipe, this ,1, 9));
+					addTile(new Pipe(x*size-15, y*size, 2*size+30, size*19, true, Id.pipe, this ,1, 9));
 				}
 				//深紫色 - 往上pipe 40,0,40
 				else if(red == 40 && green == 0 && blue == 40) {
 					//System.out.println("addPowerUp");
-					addTile(new Pipe(x*size-15, y*size, 2*size+30, size*9, true, Id.pipe, this ,0, 9));
+					addTile(new Pipe(x*size-15, y*size, 2*size+30, size*19, true, Id.pipe, this ,0, 9));
 				}
 				//黃色 - waffle 255,220,60
 				else if(red == 255 && green == 220 && blue == 60) {

@@ -24,16 +24,13 @@ public class GamePanel extends Canvas implements Runnable{
 	public static final int SCALE = 4; //規模 1280*720
 	//Dimension 封裝了width,height
 	Dimension SCREEN_SIZE = new Dimension(GAME_WIDTH*SCALE,GAME_HEIGHT*SCALE);
-	public double enemyCp;
-	public static int level;
-	public double playerCp;
-	public static boolean success = false; 
+	public static boolean success;
 	public int success_delay = 0;
-	public static boolean running = true;
-	public static boolean goThroughPipe = false;
-	public static int get_waffle = 0; // 得到的鬆餅總數
-	public static int lives = 3; //生命數
-	public static int killed_enemy = 0;
+	public static boolean running;
+	public static boolean goThroughPipe;
+	public static int get_waffle;
+	public static int lives;
+	public static int killed_enemy;
 	
 	private static BufferedImage background;
 	public static BufferedImage location_image;
@@ -72,12 +69,15 @@ public class GamePanel extends Canvas implements Runnable{
 	
 	
 	//設定panel 的初始畫面
-	public GamePanel(double enemyCp,double playerCp,int level) {
-		this.enemyCp = enemyCp;
-		this.playerCp = playerCp;
-		this.level = level;
+	public GamePanel() {
 		System.out.println("game1Panel construcroer!");
 		this.setPreferredSize(SCREEN_SIZE);
+		goThroughPipe = false;
+		killed_enemy = 0;
+		get_waffle = 0;
+		lives = 3;
+		running = true;
+		success = false;
 	}
 	
 	//初始設定
@@ -239,7 +239,7 @@ public class GamePanel extends Canvas implements Runnable{
 		while(running) {
 			Long now = System.nanoTime();
 			delta += (now-lastTime)/ns;
-			if(level == killed_enemy) {
+			if(Game.level == killed_enemy) {
 				success = true;
 				render();
 				render();
@@ -271,7 +271,7 @@ public class GamePanel extends Canvas implements Runnable{
 		}
 		Game.frame.remove(this);
 		try {
-			Game.endPanel = new EndPanel(success,enemyCp,playerCp,level,get_waffle);
+			Game.endPanel = new EndPanel();
 		} catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

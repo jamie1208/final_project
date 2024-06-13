@@ -12,13 +12,12 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 
+import game.GameFrame;
 import game.TimeFeeling;
+import game2.src.Game2.Game2;
 
 public class EndPanel extends Canvas implements Runnable{
-	public double enemyCp;
-	public int level;
-	public double playerCp;
-	public int get_waffle;
+
     //set panel size
     static final int END_WIDHTH = 1280;
     static final int END_HEIGHT = 720;
@@ -44,7 +43,6 @@ public class EndPanel extends Canvas implements Runnable{
 
     //結束後cp結算
     SoundHandler sound;
-    int total_CP; //玩家獲得
     int img_num;
     boolean success;
     Image image;
@@ -53,14 +51,9 @@ public class EndPanel extends Canvas implements Runnable{
     Random random;
     boolean close;
 
-    EndPanel(boolean success,double enemyCp,double playerCp,int level,int get_waffle) throws UnsupportedAudioFileException, IOException, LineUnavailableException{
-		this.enemyCp = enemyCp;
-		this.playerCp = playerCp;
-		this.level = level;
-		this.get_waffle = get_waffle;
+    EndPanel() throws UnsupportedAudioFileException, IOException, LineUnavailableException{
     	random = new Random();
         close = false;
-        this.success = success;
         setCP();
         setAllImg();
         setSound();
@@ -82,12 +75,13 @@ public class EndPanel extends Canvas implements Runnable{
 
     //設定total cp(+-10,四捨五入 , 鬆餅是怪獸1%)
     public void setCP(){
-        total_CP = (int)Math.round(enemyCp *0.1);
+        Game.total_CP = (int)Math.round(Game.enemyCp *0.1);
+        System.out.println("totalCP = "+Game.total_CP);
         if(success){
-            total_CP += (int)Math.round(get_waffle*(enemyCp*0.1));
+            Game.total_CP += GamePanel.get_waffle;
         }
         else{
-            total_CP = Math.abs(total_CP-(int)Math.round(get_waffle*(enemyCp*0.1)));
+            Game.total_CP = Math.abs(Game.total_CP-GamePanel.get_waffle);
         }
     }
 
@@ -138,11 +132,11 @@ public class EndPanel extends Canvas implements Runnable{
 
         g.setColor(Color.white);
         g.setFont(new Font("ComicSansMS",Font.PLAIN,100));
-        g.drawString("+"+String.valueOf(get_waffle), END_WIDHTH/2,60+WAFFLE_HEIGHT+WL_HEIGHT);
+        g.drawString("+"+String.valueOf(GamePanel.get_waffle), END_WIDHTH/2,60+WAFFLE_HEIGHT+WL_HEIGHT);
         if(success)
-        g.drawString("CP +"+String.valueOf(total_CP+get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
+        g.drawString("CP +"+String.valueOf(Game.total_CP),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
         else{
-            g.drawString("CP -"+String.valueOf(total_CP+get_waffle),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
+            g.drawString("CP -"+String.valueOf(Game.total_CP),END_WIDHTH/2 - WAFFLE_WIDTH-50,250+WAFFLE_HEIGHT+WL_HEIGHT);
         }
     }
 
@@ -168,6 +162,10 @@ public class EndPanel extends Canvas implements Runnable{
             if(all_delta >20) {
             	break;
             }
+        }
+        GameFrame.addCp = Game.total_CP;
+        if(!success) {
+        	GameFrame.addCp *= (-1);
         }
         Window window = SwingUtilities.getWindowAncestor(EndPanel.this);
         if (window != null) {

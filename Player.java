@@ -183,7 +183,7 @@ public class Player extends Entity{
 				if(getBound().intersects(en.getBound())) {
 					onFire = true;
 					onFireTime = 0;
-					System.out.println("mushroom die!");
+					//System.out.println("mushroom die!");
 					GamePanel.playSound(GOTMUSHROOMSOUND, gotMushroomThread);
 					en.die();
 					break;
@@ -195,9 +195,9 @@ public class Player extends Entity{
 				if(getBottomBound().intersects(en.getBound())) {
 					en.die();
 					GamePanel.killed_enemy += 1;
-					System.out.println("ennmy die!");
+					//System.out.println("ennmy die!");
 					GamePanel.playSound(STEPENEMYSOUND, stepEnemyThread);
-					if(GamePanel.level == GamePanel.killed_enemy) {
+					if(Game.level == GamePanel.killed_enemy) {
 						GamePanel.playSound(WIN, winThread);
 						//GamePanel.success = true;
 					}
@@ -209,7 +209,7 @@ public class Player extends Entity{
 					if(state == PlayerState.SMALL) {
 						//die();
 						en.die();
-						System.out.println("entity and enemy die!");
+						//System.out.println("entity and enemy die!");
 						GamePanel.lives -= 1;
 						GamePanel.now_live_image = GamePanel.lives_image[GamePanel.lives];
 						if(GamePanel.lives == 0) {
@@ -220,19 +220,19 @@ public class Player extends Entity{
 							GamePanel.playSound(LOOSE, looseThread);
 							System.out.println("Garvity = "+gravity);
 						}
-						System.out.println(GamePanel.lives);
+						//System.out.println(GamePanel.lives);
 						break;
 					}
 					//長大 -> 變小
 					else if(state == PlayerState.BIG) {
-						System.out.println("PlayerState"+state);
+						//System.out.println("PlayerState"+state);
 						int tpx = getX();
 						int tpy = getY();
 						width/=2; //改變長寬會使xy隨機transport
 						height/=2;
 						setX(tpx-width/2);
 						setY(tpy-height/2);
-						System.out.println("enemy die!");
+						//System.out.println("enemy die!");
 						state = PlayerState.SMALL;
 						en.die();
 						break;
@@ -284,9 +284,9 @@ public class Player extends Entity{
 				//通過pipe (body長度加上2*head長度),visible = true
 				if(pixelsTravelled>tile.height+height) {
 					visible = true;
-					System.out.printf("tile height = %d\n",tile.height);
-					System.out.println("high = "+pixelsTravelled);
-					System.out.println("finish");
+//					System.out.printf("tile height = %d\n",tile.height);
+//					System.out.println("high = "+pixelsTravelled);
+//					System.out.println("finish");
 					goThroughPipe = false;
 					GamePanel.goThroughPipe = false;
 					pixelsTravelled = 0;
@@ -294,8 +294,8 @@ public class Player extends Entity{
 					if(tile.facing == 0) {
 						gravity = 0;
 					}
-					System.out.println("goThroughPipe = "+goThroughPipe);
-					System.out.println("pipe close :"+tile.facing);
+//					System.out.println("goThroughPipe = "+goThroughPipe);
+//					System.out.println("pipe close :"+tile.facing);
 				}
 				//看往上or下
 				switch(tile.facing) {
