@@ -1,4 +1,4 @@
-package com.martio.game;
+package game;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 
 @SuppressWarnings("serial")
 public class GameFrame extends JFrame{
+	public static int addCp;
 	private static final String TITLE_STRING = "Start";
 	//StartPanel startPanel;
 	
